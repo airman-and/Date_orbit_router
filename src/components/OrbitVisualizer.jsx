@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const ICONS = {
   flutter: (
@@ -97,10 +97,10 @@ export default function OrbitVisualizer({
   return (
     <div className="orbit-visualizer">
       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
-        오늘 산출된 데이트 궤도 경로
+        오늘 코스 순서
       </p>
       <p style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-        💡 행성을 드래그하여 코스 순서를 자유롭게 조율해보세요! (실시간 코스 재산출)
+        테마를 드래그해 순서를 바꾸면 추천 코스가 다시 계산됩니다.
       </p>
       <div className="orbit-path-container">
         <div className="orbit-line"></div>

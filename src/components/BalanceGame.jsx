@@ -1,4 +1,3 @@
-import React from 'react';
 import { playSFX } from '../utils/sfx';
 
 const ICONS = {
@@ -134,14 +133,14 @@ const GAME_QUESTIONS = [
       {
         val: "A",
         icon: "calendar",
-        title: "설계된 동선과 예약 필수",
-        desc: "맛집 웨이팅은 사전 어플로 파악! 동선 낭비 없는 완벽한 동선 계획"
+        title: "계획된 동선과 예약 선호",
+        desc: "웨이팅과 층 이동을 미리 확인하고 편하게 움직이기"
       },
       {
         val: "B",
         icon: "compass",
-        title: "기분 따라 흐르는 즉흥형 데이트",
-        desc: "일단 둘러보며 끌리는 매장에 입장! 웨이팅 길면 즉흥적으로 플랜 B 작동"
+        title: "기분 따라 고르는 즉흥형 데이트",
+        desc: "둘러보다가 끌리는 매장에 들어가고, 웨이팅이 길면 바로 바꾸기"
       }
     ]
   }
@@ -168,20 +167,6 @@ export default function BalanceGame({
 }) {
   const currentQ = GAME_QUESTIONS[gameStep] || GAME_QUESTIONS[0];
 
-  const handleCardMouseMove = (e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    card.style.transform = `perspective(800px) rotateX(${-y / 10}deg) rotateY(${x / 10}deg) scale3d(1.02, 1.02, 1.02)`;
-    card.style.boxShadow = `0 10px 30px rgba(255, 117, 140, 0.12), 0 0 20px rgba(255, 117, 140, 0.08)`;
-  };
-
-  const handleCardMouseLeave = (e) => {
-    const card = e.currentTarget;
-    card.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-    card.style.boxShadow = 'none';
-  };
 
   const validateMbti = (str) => {
     const val = String(str).trim().toUpperCase();
@@ -200,7 +185,7 @@ export default function BalanceGame({
     <div>
       {/* Onboarding Method Radio Selector */}
       <div className="onboarding-method-selector">
-        <p>🔮 성향 분석 방식 선택</p>
+        <p>성향 분석 방식 선택</p>
         <div className="onboarding-method-options">
           <label className="onboarding-method-label">
             <input 
@@ -209,7 +194,7 @@ export default function BalanceGame({
               checked={onboardingMode === 'game'} 
               onChange={() => { playSFX('click'); onOnboardingModeChange('game'); }}
             />
-            🎮 커플 개별 밸런스 게임으로 궁합 찾기 (추천)
+            커플 개별 밸런스 게임으로 취향 찾기 (추천)
           </label>
           <label className="onboarding-method-label">
             <input 
@@ -218,7 +203,7 @@ export default function BalanceGame({
               checked={onboardingMode === 'manual'} 
               onChange={() => { playSFX('click'); onOnboardingModeChange('manual'); }}
             />
-            ✍️ 우리 MBTI 직접 타이핑하기
+            우리 MBTI 직접 입력하기
           </label>
         </div>
       </div>
@@ -288,15 +273,13 @@ export default function BalanceGame({
                     <div 
                       key={opt.val} 
                       className="balance-choice-card"
-                      onMouseMove={handleCardMouseMove}
-                      onMouseLeave={handleCardMouseLeave}
                       onClick={() => {
                         playSFX('click');
                         onGameSelect(currentQ.key, opt.val);
                       }}
                       style={{
                         borderColor: gameTurn === 'boyfriend' ? 'rgba(255,117,140,0.1)' : 'rgba(59,209,255,0.1)',
-                        transition: 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.15s, border-color 0.2s'
+                        transition: 'background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease'
                       }}
                     >
                       <div className="balance-emoji" style={{ color: gameTurn === 'boyfriend' ? 'var(--accent-pink)' : 'var(--accent-blue)' }}>
@@ -315,8 +298,8 @@ export default function BalanceGame({
                 {/* Match Complete */}
                 <div style={{ marginBottom: '25px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-pink)' }}>🎮 듀얼 개별 온보딩 게임 완료</span>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#4ade80' }}>궁합 연산 성공 (100%)</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-pink)' }}>커플 성향 분석 완료</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#4ade80' }}>분석 완료 (100%)</span>
                   </div>
                   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', height: '6px', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{ backgroundColor: '#4ade80', width: '100%', height: '100%', borderRadius: '3px', boxShadow: '0 0 8px #4ade80' }}></div>
@@ -325,11 +308,11 @@ export default function BalanceGame({
 
                 <div className="badge-game-result" style={{ border: '1px solid rgba(255, 117, 140, 0.25)' }}>
                   <span className="badge-game-result-tag">
-                    🎮 남: <strong style={{ color: 'var(--accent-pink)' }}>{boyfriendMbti}</strong> 궤도 × 여: <strong style={{ color: 'var(--accent-blue)' }}>{girlfriendMbti}</strong> 궤도 융합
+                    남: <strong style={{ color: 'var(--accent-pink)' }}>{boyfriendMbti}</strong> × 여: <strong style={{ color: 'var(--accent-blue)' }}>{girlfriendMbti}</strong>
                   </span>
                   <h4 style={{ marginTop: '12px' }}>✨ 두 분은 「{MBTI_NICKNAMES[boyfriendMbti] || "소울메이트 커플 💕"}」</h4>
                   <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginTop: '8px' }}>
-                    남자친구({boyfriendMbti})의 현실계획과 여자친구({girlfriendMbti})의 무한 감성이 만나 최적의 교집합 궤도를 도출해 냈습니다.
+                    남자친구({boyfriendMbti})와 여자친구({girlfriendMbti})의 취향을 함께 반영해 오늘 움직이기 좋은 코스를 고릅니다.
                   </p>
                 </div>
 
@@ -366,7 +349,7 @@ export default function BalanceGame({
                       </select>
                     </div>
                     <div className="sidebar-field">
-                      <label>🏢 데이트 궤도 공간 토폴로지</label>
+                      <label>🏢 코스 범위</label>
                       <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
                         <div className="kiosk-radio-options" style={{ flexDirection: 'column', gap: '6px' }}>
                           <label className="kiosk-radio-label">
@@ -393,7 +376,7 @@ export default function BalanceGame({
                   </div>
 
                   <button className="btn-stretch border-beam-btn" onClick={() => { playSFX('click'); onStart(); }}>
-                    <span>🚀 궁합 밀착 데이트 궤도 쏘아 올리기 (계산 시작)</span>
+                    <span>추천 코스 만들기</span>
                   </button>
                 </div>
               </div>
@@ -402,7 +385,7 @@ export default function BalanceGame({
         ) : (
           <div className="manual-input-box">
             <p style={{ fontSize: '1.05rem', color: 'var(--accent-pink)', fontWeight: 700, borderLeft: '3px solid var(--accent-pink)', paddingLeft: '10px' }}>
-              ✍️ 직접 MBTI 입력하기
+              직접 MBTI 입력하기
             </p>
 
             <div className="manual-grid">
@@ -457,7 +440,7 @@ export default function BalanceGame({
                 </select>
               </div>
               <div className="sidebar-field">
-                <label>🏢 데이트 궤도 토폴로지</label>
+                <label>🏢 코스 범위</label>
                 <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <div className="kiosk-radio-options" style={{ flexDirection: 'column', gap: '6px' }}>
                     <label className="kiosk-radio-label">
@@ -484,7 +467,7 @@ export default function BalanceGame({
             </div>
 
             <button className="btn-stretch border-beam-btn" disabled={!isManualValid} onClick={() => { playSFX('click'); onStart(); }}>
-              <span>🚀 궁합 밀착 데이트 궤도 쏘아 올리기 (계산 시작)</span>
+              <span>추천 코스 만들기</span>
             </button>
           </div>
         )}
