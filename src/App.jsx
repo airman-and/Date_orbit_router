@@ -18,6 +18,7 @@ import RouteInsights from './components/RouteInsights';
 import RouteSidebar from './components/RouteSidebar';
 import RouteSummary from './components/RouteSummary';
 import SpaceHero from './components/SpaceHero';
+import StoreDirectoryPanel from './components/StoreDirectoryPanel';
 
 const ROUTE_LOADING_DELAY_MS = 900;
 const DEFAULT_BF_ANSWERS = { q1: 'A', q2: 'A', q3: 'B', q4: 'A' };
@@ -331,6 +332,8 @@ export default function App() {
               boyfriendMbti={boyfriendMbti}
               girlfriendMbti={girlfriendMbti}
             />
+
+            <StoreDirectoryPanel />
 
             <div className="action-buttons-row">
               <button className="btn-stretch btn-secondary" type="button" onClick={() => triggerCalculation()}>
