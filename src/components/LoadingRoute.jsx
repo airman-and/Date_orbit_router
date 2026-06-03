@@ -1,8 +1,19 @@
+import { useEffect, useRef } from 'react';
+
 export default function LoadingRoute() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 2.0; // Play at 2x speed
+    }
+  }, []);
+
   return (
     <div className="premium-card loading-route-card" aria-live="polite" style={{ textAlign: 'center', padding: '30px' }}>
       <div className="loading-container">
         <video 
+          ref={videoRef}
           src="/loading_rocket.mp4" 
           autoPlay 
           muted 
