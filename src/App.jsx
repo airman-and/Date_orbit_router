@@ -57,7 +57,9 @@ export default function App() {
   } = useDateOrbit();
 
   const resolvedPlanetOrder = useMemo(() => {
-    if (planetOrder.length === 3) return planetOrder;
+    const validPlanets = ['체험형 궤도', '소장형 궤도', '인증형 궤도', '심리형 궤도'];
+    const isValid = planetOrder.length === 3 && planetOrder.every(p => validPlanets.includes(p));
+    if (isValid) return planetOrder;
     return getDeterministicOrbit(getCoupleMbti(boyfriendMbti, girlfriendMbti));
   }, [boyfriendMbti, girlfriendMbti, planetOrder]);
 
