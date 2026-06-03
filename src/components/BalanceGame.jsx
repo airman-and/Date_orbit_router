@@ -366,41 +366,14 @@ export default function BalanceGame({
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div className="sidebar-field">
-                      <label>🎬 시추에이션 데이트 프리셋</label>
-                      <select value={dateType} onChange={(e) => { playSFX('click'); onDateTypeChange(e.target.value); }}>
-                        <option value="1. 설렘 반 어색 반 (초기 커플)">1. 설렘 반 어색 반 (초기 커플)</option>
-                        <option value="2. 인스타 하이라이트 (트렌드 세터)">2. 인스타 하이라이트 (트렌드 세터)</option>
-                        <option value="3. 만사 귀찮음 (릴랙스 힐링)">3. 만사 귀찮음 (릴랙스 힐링)</option>
-                        <option value="4. 파이팅 넘치는 (이색 도전)">4. 파이팅 넘치는 (이색 도전)</option>
-                      </select>
-                    </div>
-                    <div className="sidebar-field">
-                      <label>🏢 코스 범위</label>
-                      <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <div className="kiosk-radio-options" style={{ flexDirection: 'column', gap: '6px' }}>
-                          <label className="kiosk-radio-label">
-                            <input 
-                              type="radio" 
-                              name="game-topo-1" 
-                              checked={zonePreference === '스타필드 수원 올인원 몰링 코스 (실내)'} 
-                              onChange={() => { playSFX('click'); onZonePreferenceChange('스타필드 수원 올인원 몰링 코스 (실내)'); }}
-                            />
-                            실내 올인원 코스
-                          </label>
-                          <label className="kiosk-radio-label">
-                            <input 
-                              type="radio" 
-                              name="game-topo-1" 
-                              checked={zonePreference === '스트리트형 아웃도어 & 로드 코스 (야외)'} 
-                              onChange={() => { playSFX('click'); onZonePreferenceChange('스트리트형 아웃도어 & 로드 코스 (야외)'); }}
-                            />
-                            야외 스트리트 코스
-                          </label>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="sidebar-field">
+                    <label>🎬 시추에이션 데이트 프리셋</label>
+                    <select value={dateType} onChange={(e) => { playSFX('click'); onDateTypeChange(e.target.value); }}>
+                      <option value="1. 설렘 반 어색 반 (초기 커플)">1. 설렘 반 어색 반 (초기 커플)</option>
+                      <option value="2. 인스타 하이라이트 (트렌드 세터)">2. 인스타 하이라이트 (트렌드 세터)</option>
+                      <option value="3. 만사 귀찮음 (릴랙스 힐링)">3. 만사 귀찮음 (릴랙스 힐링)</option>
+                      <option value="4. 파이팅 넘치는 (이색 도전)">4. 파이팅 넘치는 (이색 도전)</option>
+                    </select>
                   </div>
 
                   <button className="btn-stretch border-beam-btn" onClick={() => { playSFX('click'); onStart(); }}>
@@ -483,41 +456,14 @@ export default function BalanceGame({
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div className="sidebar-field">
-                <label>🎬 데이트 상황 프리셋</label>
-                <select value={dateType} onChange={(e) => { playSFX('click'); onDateTypeChange(e.target.value); }}>
-                  <option value="1. 설렘 반 어색 반 (초기 커플)">1. 설렘 반 어색 반 (초기 커플)</option>
-                  <option value="2. 인스타 하이라이트 (트렌드 세터)">2. 인스타 하이라이트 (트렌드 세터)</option>
-                  <option value="3. 만사 귀찮음 (릴랙스 힐링)">3. 만사 귀찮음 (릴랙스 힐링)</option>
-                  <option value="4. 파이팅 넘치는 (이색 도전)">4. 파이팅 넘치는 (이색 도전)</option>
-                </select>
-              </div>
-              <div className="sidebar-field">
-                <label>🏢 코스 범위</label>
-                <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="kiosk-radio-options" style={{ flexDirection: 'column', gap: '6px' }}>
-                    <label className="kiosk-radio-label">
-                      <input 
-                        type="radio" 
-                        name="manual-topo-2" 
-                        checked={zonePreference === '스타필드 수원 올인원 몰링 코스 (실내)'} 
-                        onChange={() => { playSFX('click'); onZonePreferenceChange('스타필드 수원 올인원 몰링 코스 (실내)'); }}
-                      />
-                      실내 올인원 코스
-                    </label>
-                    <label className="kiosk-radio-label">
-                      <input 
-                        type="radio" 
-                        name="manual-topo-2" 
-                        checked={zonePreference === '스트리트형 아웃도어 & 로드 코스 (야외)'} 
-                        onChange={() => { playSFX('click'); onZonePreferenceChange('스트리트형 아웃도어 & 로드 코스 (야외)'); }}
-                      />
-                      야외 스트리트 코스
-                    </label>
-                  </div>
-                </div>
-              </div>
+            <div className="sidebar-field">
+              <label>🎬 데이트 상황 프리셋</label>
+              <select value={dateType} onChange={(e) => { playSFX('click'); onDateTypeChange(e.target.value); }}>
+                <option value="1. 설렘 반 어색 반 (초기 커플)">1. 설렘 반 어색 반 (초기 커플)</option>
+                <option value="2. 인스타 하이라이트 (트렌드 세터)">2. 인스타 하이라이트 (트렌드 세터)</option>
+                <option value="3. 만사 귀찮음 (릴랙스 힐링)">3. 만사 귀찮음 (릴랙스 힐링)</option>
+                <option value="4. 파이팅 넘치는 (이색 도전)">4. 파이팅 넘치는 (이색 도전)</option>
+              </select>
             </div>
 
             <button className="btn-stretch border-beam-btn" disabled={!isManualValid} onClick={() => { playSFX('click'); onStart(); }}>

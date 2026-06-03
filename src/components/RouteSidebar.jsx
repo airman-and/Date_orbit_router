@@ -72,22 +72,6 @@ export default function RouteSidebar({
             </select>
           </div>
 
-          <div className="sidebar-field">
-            <span className="field-label">코스 범위</span>
-            <div className="sidebar-radio-group">
-              {ZONE_OPTIONS.map(option => (
-                <label className="sidebar-radio-option" key={option.value}>
-                  <input
-                    type="radio"
-                    name="sidebar-zone"
-                    checked={zonePreference === option.value}
-                    onChange={() => onZonePreferenceChange(option.value)}
-                  />
-                  {option.label}
-                </label>
-              ))}
-            </div>
-          </div>
         </div>
       ) : (
         <div className="sidebar-info">
