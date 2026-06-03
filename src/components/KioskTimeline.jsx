@@ -120,7 +120,9 @@ export default function KioskTimeline({
   badgeClass,
   matchRate,
   catalyst,
-  onCatalystChange
+  onCatalystChange,
+  boyfriendMbti,
+  girlfriendMbti
 }) {
   if (!selectedRestaurant || !selectedCafe || !selectedActivity) return null;
 

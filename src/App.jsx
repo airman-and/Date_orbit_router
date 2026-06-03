@@ -323,7 +323,8 @@ export default function App() {
                 setCatalyst(nextCatalyst);
                 triggerCalculation(null, nextCatalyst);
               }}
-              onRecalculate={() => triggerCalculation()}
+              boyfriendMbti={boyfriendMbti}
+              girlfriendMbti={girlfriendMbti}
             />
 
             <RouteInsights
