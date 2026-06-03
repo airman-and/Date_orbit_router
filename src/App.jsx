@@ -21,7 +21,7 @@ import RouteSummary from './components/RouteSummary';
 import SpaceHero from './components/SpaceHero';
 import StoreDirectoryPanel from './components/StoreDirectoryPanel';
 
-const ROUTE_LOADING_DELAY_MS = 5000;
+const ROUTE_LOADING_DELAY_MS = 3333;
 const DEFAULT_BF_ANSWERS = { q1: 'A', q2: 'A', q3: 'B', q4: 'A' };
 const DEFAULT_GF_ANSWERS = { q1: 'B', q2: 'B', q3: 'A', q4: 'B' };
 const DEFAULT_DATE_TYPE = '1. 설렘 반 어색 반 (초기 커플)';

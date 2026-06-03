@@ -5,7 +5,7 @@ export default function LoadingRoute() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 2.0; // Play at 2x speed
+      videoRef.current.playbackRate = 3.0; // Play at 3x speed
     }
   }, []);
 
