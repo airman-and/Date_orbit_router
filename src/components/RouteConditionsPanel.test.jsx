@@ -1,31 +1,23 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import RouteConditionsPanel from './RouteConditionsPanel';
 
-vi.mock('../utils/sfx', () => ({
-  playSFX: vi.fn()
-}));
-
 describe('RouteConditionsPanel', () => {
-  it('calls recalculation callbacks when conditions change', async () => {
-    const user = userEvent.setup();
-    const onWeatherChange = vi.fn();
-    const onCrowdChange = vi.fn();
-
+  it('renders automatic condition values correctly', () => {
     render(
       <RouteConditionsPanel
-        weather="sunny"
-        crowd="normal"
-        onWeatherChange={onWeatherChange}
-        onCrowdChange={onCrowdChange}
+        dateText="6월 3일 (수) 14시"
+        weatherLabel="☀️ 맑음"
+        weatherReason="봄/가을철 온화하고 맑은 기상 분석"
+        crowdLabel="🟡 보통"
+        crowdReason="평일 저녁 시간대 보통 관측"
       />
     );
 
-    await user.click(screen.getByRole('button', { name: '비' }));
-    await user.click(screen.getByRole('button', { name: '혼잡' }));
-
-    expect(onWeatherChange).toHaveBeenCalledWith('rainy');
-    expect(onCrowdChange).toHaveBeenCalledWith('peak');
+    expect(screen.getByText(/6월 3일/)).toBeInTheDocument();
+    expect(screen.getByText('☀️ 맑음')).toBeInTheDocument();
+    expect(screen.getByText('봄/가을철 온화하고 맑은 기상 분석')).toBeInTheDocument();
+    expect(screen.getByText('🟡 보통')).toBeInTheDocument();
+    expect(screen.getByText('평일 저녁 시간대 보통 관측')).toBeInTheDocument();
   });
 });

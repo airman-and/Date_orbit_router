@@ -4,7 +4,8 @@ import {
   answersToMbti,
   buildRouteAnalysis,
   getCoupleMbti,
-  getDeterministicOrbit
+  getDeterministicOrbit,
+  estimateEnvironmentalConditions
 } from './domain/dateOrbit';
 import { useDateOrbit } from './hooks/useDateOrbit';
 import { playSFX } from './utils/sfx';
@@ -20,7 +21,7 @@ import RouteSummary from './components/RouteSummary';
 import SpaceHero from './components/SpaceHero';
 import StoreDirectoryPanel from './components/StoreDirectoryPanel';
 
-const ROUTE_LOADING_DELAY_MS = 900;
+const ROUTE_LOADING_DELAY_MS = 3500;
 const DEFAULT_BF_ANSWERS = { q1: 'A', q2: 'A', q3: 'B', q4: 'A' };
 const DEFAULT_GF_ANSWERS = { q1: 'B', q2: 'B', q3: 'A', q4: 'B' };
 const DEFAULT_DATE_TYPE = '1. 설렘 반 어색 반 (초기 커플)';
@@ -40,8 +41,10 @@ export default function App() {
   const [budgetInput, setBudgetInput] = useState(100000);
   const [dateType, setDateType] = useState(DEFAULT_DATE_TYPE);
   const [zonePreference, setZonePreference] = useState(DEFAULT_ZONE);
-  const [weather, setWeather] = useState('sunny');
-  const [crowd, setCrowd] = useState('normal');
+  const [currentDate] = useState(() => new Date());
+  const env = useMemo(() => estimateEnvironmentalConditions(currentDate), [currentDate]);
+  const weather = env.weather;
+  const crowd = env.crowd;
   const [planetOrder, setPlanetOrder] = useState([]);
   const [mealStatus, setMealStatus] = useState('hungry');
   const [catalyst, setCatalyst] = useState(null);
@@ -302,10 +305,11 @@ export default function App() {
             />
 
             <RouteConditionsPanel
-              weather={weather}
-              crowd={crowd}
-              onWeatherChange={setWeather}
-              onCrowdChange={setCrowd}
+              dateText={env.formattedDate}
+              weatherLabel={env.weatherLabel}
+              weatherReason={env.weatherReason}
+              crowdLabel={env.crowdLabel}
+              crowdReason={env.crowdReason}
             />
 
             {resolvedPlanetOrder.length === 3 && (

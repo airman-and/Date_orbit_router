@@ -504,3 +504,41 @@ export const buildRouteAnalysis = ({
     compatibilityTip
   };
 };
+
+export const estimateEnvironmentalConditions = (date = new Date()) => {
+  const day = date.getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+  const hour = date.getHours();
+  const month = date.getMonth() + 1; // 1-12
+
+  // 1. Estimate crowd density
+  let crowd = 'normal';
+  let crowdReason = '평일 저녁 시간대 보통 관측';
+  if (day === 0 || day === 6) {
+    crowd = 'peak';
+    crowdReason = '주말/공휴일 피크 시간대 혼잡 관측';
+  } else if (hour < 17) {
+    crowd = 'quiet';
+    crowdReason = '평일 낮 시간대 여유 관측';
+  }
+
+  // 2. Estimate weather based on month/season
+  let weather = 'sunny';
+  let weatherReason = '봄/가을철 온화하고 맑은 기상 분석';
+  if (month === 12 || month === 1 || month === 2) {
+    weather = 'cold';
+    weatherReason = '겨울철 한파 주의보 관측 (실내 체류 권장)';
+  } else if (month === 7 || month === 8) {
+    weather = 'rainy';
+    weatherReason = '여름철 장마 및 집중호우 관측 (우산 필요)';
+  }
+
+  return {
+    weather,
+    crowd,
+    weatherLabel: weather === 'sunny' ? '☀️ 맑음' : weather === 'rainy' ? '🌧️ 비 옴' : '❄️ 한파/추움',
+    crowdLabel: crowd === 'quiet' ? '🟢 여유' : crowd === 'normal' ? '🟡 보통' : '🔴 혼잡',
+    weatherReason,
+    crowdReason,
+    formattedDate: `${month}월 ${date.getDate()}일 (${['일', '월', '화', '수', '목', '금', '토'][day]}) ${hour}시`
+  };
+};

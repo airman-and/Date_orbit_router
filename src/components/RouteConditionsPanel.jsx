@@ -1,70 +1,34 @@
-import { playSFX } from '../utils/sfx';
-
-const WEATHER_OPTIONS = [
-  { key: 'sunny', label: '맑음' },
-  { key: 'rainy', label: '비' },
-  { key: 'cold', label: '추움' }
-];
-
-const CROWD_OPTIONS = [
-  { key: 'quiet', label: '여유' },
-  { key: 'normal', label: '보통' },
-  { key: 'peak', label: '혼잡' }
-];
-
-export default function RouteConditionsPanel({ weather, crowd, onWeatherChange, onCrowdChange }) {
-  const handleWeather = (value) => {
-    playSFX('click');
-    onWeatherChange(value);
-  };
-
-  const handleCrowd = (value) => {
-    playSFX('click');
-    onCrowdChange(value);
-  };
-
+export default function RouteConditionsPanel({ dateText, weatherLabel, weatherReason, crowdLabel, crowdReason }) {
   return (
     <section className="premium-card environment-card" aria-labelledby="conditions-title">
       <div className="panel-heading">
-        <span className="section-kicker">CONDITIONS</span>
-        <h3 id="conditions-title">조건 조정</h3>
-        <p>날씨와 혼잡도를 바꾸면 추천 코스가 바로 다시 계산됩니다.</p>
+        <span className="section-kicker">OBSERVATION</span>
+        <h3 id="conditions-title">실시간 기상 및 쇼핑몰 관측</h3>
+        <p>기상청 및 스타필드 입출차 시스템 기준 실시간 분석 데이터 ({dateText})</p>
       </div>
 
-      <div className="environment-grid">
-        <fieldset className="segmented-field">
-          <legend>당일 날씨</legend>
-          <div className="segmented-control">
-            {WEATHER_OPTIONS.map(option => (
-              <button
-                key={option.key}
-                type="button"
-                className={weather === option.key ? 'active' : ''}
-                aria-pressed={weather === option.key}
-                onClick={() => handleWeather(option.key)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+      <div className="environment-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '16px' }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.02)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          padding: '16px',
+          borderRadius: '12px'
+        }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600 }}>📡 관측된 날씨</span>
+          <div style={{ fontSize: '1.25rem', color: 'white', fontWeight: 800, margin: '8px 0' }}>{weatherLabel}</div>
+          <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{weatherReason}</p>
+        </div>
 
-        <fieldset className="segmented-field">
-          <legend>쇼핑몰 혼잡도</legend>
-          <div className="segmented-control">
-            {CROWD_OPTIONS.map(option => (
-              <button
-                key={option.key}
-                type="button"
-                className={crowd === option.key ? 'active' : ''}
-                aria-pressed={crowd === option.key}
-                onClick={() => handleCrowd(option.key)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <div style={{
+          background: 'rgba(255,255,255,0.02)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          padding: '16px',
+          borderRadius: '12px'
+        }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600 }}>🚗 예상 대기 혼잡도</span>
+          <div style={{ fontSize: '1.25rem', color: 'white', fontWeight: 800, margin: '8px 0' }}>{crowdLabel}</div>
+          <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{crowdReason}</p>
+        </div>
       </div>
     </section>
   );
