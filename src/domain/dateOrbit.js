@@ -1,6 +1,6 @@
 import { PLACE_DB } from '../data/places';
 
-export const COURSE_CATEGORIES = ['식사', '카페', '액티비티'];
+export const COURSE_CATEGORIES = ['체험형', '소장형', '인증형', '심리형'];
 export const DEFAULT_WEATHER = 'sunny';
 export const DEFAULT_CROWD = 'normal';
 
@@ -48,30 +48,33 @@ export const answersToMbti = (answers) => {
 };
 
 export const getDeterministicOrbit = (couple) => {
-  let planetA = '조용한 행성';
-  if (couple.T_F < 0.4) {
-    planetA = '설렘 행성';
-  } else if (couple.E_I > 0.6) {
-    planetA = '도파민 행성';
-  }
-
-  let planetB = couple.S_N > 0.5 ? '달콤 행성' : '조용한 행성';
-  if (planetB === planetA) {
-    planetB = planetA === '조용한 행성' ? '달콤 행성' : '조용한 행성';
-  }
-
-  let planetC = '향기 행성';
+  // Planet A
+  let planetA = '심리형 궤도';
   if (couple.E_I > 0.6) {
-    planetC = '도파민 행성';
-  } else if (couple.S_N > 0.5 && couple.J_P < 0.5) {
-    planetC = '기록 행성';
+    planetA = '체험형 궤도';
+  } else if (couple.S_N > 0.6) {
+    planetA = '소장형 궤도';
+  } else if (couple.T_F < 0.4) {
+    planetA = '인증형 궤도';
+  }
+
+  // Planet B
+  let planetB = couple.S_N > 0.5 ? '소장형 궤도' : '심리형 궤도';
+  if (planetB === planetA) {
+    planetB = planetA === '심리형 궤도' ? '인증형 궤도' : '심리형 궤도';
+  }
+
+  // Planet C
+  let planetC = '인증형 궤도';
+  if (couple.E_I > 0.6) {
+    planetC = '체험형 궤도';
   } else if (couple.J_P > 0.5) {
-    planetC = '선물 행성';
+    planetC = '소장형 궤도';
   }
 
   const used = new Set([planetA, planetB]);
   if (used.has(planetC)) {
-    const fallbacks = ['기록 행성', '도파민 행성', '선물 행성', '향기 행성'];
+    const fallbacks = ['체험형 궤도', '소장형 궤도', '인증형 궤도', '심리형 궤도'];
     for (const fallback of fallbacks) {
       if (!used.has(fallback)) {
         planetC = fallback;
@@ -121,20 +124,20 @@ export const scorePlace = (
 
   let presetScore = 0.0;
   if (dateType === '1. 설렘 반 어색 반 (초기 커플)') {
-    if (node.category === '액티비티' || node.tag === '전시/예술' || node.tag === '음악/전시') {
+    if (node.category === '체험형' || node.tag?.includes('체험') || node.tag?.includes('DIY')) {
       presetScore += 15.0;
     }
     if (node.S_N < 0.4) presetScore += 8.0;
   } else if (dateType === '2. 인스타 하이라이트 (트렌드 세터)') {
     presetScore += node.instagram_score * 3.0;
-    if (node.S_N < 0.4) presetScore += 5.0;
-    if (node.T_F < 0.4) presetScore += 5.0;
+    if (node.category === '인증형') presetScore += 10.0;
   } else if (dateType === '3. 만사 귀찮음 (릴랙스 힐링)') {
     presetScore += node.comfort_score * 3.5;
     presetScore += (5.0 - node.energy) * 4.0;
+    if (node.category === '심리형') presetScore += 8.0;
   } else if (dateType === '4. 파이팅 넘치는 (이색 도전)') {
     presetScore += node.energy * 6.0;
-    if (node.category === '액티비티') presetScore += 10.0;
+    if (node.category === '체험형') presetScore += 12.0;
   }
 
   if (crowd === 'peak') {
@@ -180,30 +183,17 @@ export const scorePlace = (
 
   let catalystScore = 0.0;
   if (catalyst === 'dopamine') {
-    if (node.category === '액티비티' || node.energy >= 4) catalystScore += 18.0;
+    if (node.category === '체험형' || node.energy >= 4) catalystScore += 18.0;
   } else if (catalyst === 'oxytocin') {
-    if (
-      node.comfort_score >= 8 ||
-      node.tag?.includes('힐링') ||
-      node.tag?.includes('카페') ||
-      node.name.includes('스파') ||
-      node.name.includes('도서관')
-    ) {
+    if (node.comfort_score >= 8 || node.category === '심리형' || node.name.includes('스파') || node.name.includes('도서관')) {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'spark') {
-    if (
-      node.instagram_score >= 8 ||
-      node.tag?.includes('감성') ||
-      node.tag?.includes('인생네컷') ||
-      node.tag?.includes('철판') ||
-      node.tag?.includes('베이글') ||
-      node.tag?.includes('전시')
-    ) {
+    if (node.instagram_score >= 8 || node.category === '소장형' || node.category === '인증형') {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'telepathy') {
-    if (node.E_I < 0.4 || node.tag?.includes('북카페') || node.tag?.includes('음악') || node.tag?.includes('산책')) {
+    if (node.E_I < 0.4 || node.category === '심리형' || node.tag?.includes('로컬') || node.tag?.includes('산책')) {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'lucky') {
@@ -224,8 +214,7 @@ export const pickCourseStop = ({
   dateType,
   weather = DEFAULT_WEATHER,
   crowd = DEFAULT_CROWD,
-  catalyst = null,
-  randomFn = Math.random
+  catalyst = null
 }) => {
   const placesInCategory = PLACE_DB.filter(place => place.category === category);
   const fallback = [...placesInCategory]
@@ -256,10 +245,8 @@ export const pickCourseStop = ({
     return fallback;
   }
 
-  const topChoices = scored.slice(0, 3);
-  const safeRandom = clamp(Number(randomFn()), 0, 0.999999);
-  const choiceIndex = Math.floor(safeRandom * topChoices.length);
-  return topChoices[choiceIndex]?.node || scored[0].node;
+  // Strictly deterministic: choose the absolute highest scored place
+  return scored[0]?.node || fallback;
 };
 
 export const calculateDateCourse = ({
@@ -271,16 +258,20 @@ export const calculateDateCourse = ({
   weather = DEFAULT_WEATHER,
   crowd = DEFAULT_CROWD,
   planetOrder,
-  catalyst = null,
-  randomFn = Math.random
+  catalyst = null
 }) => {
   const couple = getCoupleMbti(boyfriendMbti, girlfriendMbti);
   const targetSpace = getTargetSpace(zonePreference);
   const activePlanetOrder = planetOrder?.length === 3 ? planetOrder : getDeterministicOrbit(couple);
   const perPersonBudget = Math.max(0, Number(budget) || 0);
 
+  // Map planets to domains
+  const cat1 = activePlanetOrder[0].replace(' 궤도', '');
+  const cat2 = activePlanetOrder[1].replace(' 궤도', '');
+  const cat3 = activePlanetOrder[2].replace(' 궤도', '');
+
   const selectedRestaurant = pickCourseStop({
-    category: '식사',
+    category: cat1,
     targetSpace,
     budget: perPersonBudget,
     currentNode: null,
@@ -288,13 +279,12 @@ export const calculateDateCourse = ({
     dateType,
     weather,
     crowd,
-    catalyst,
-    randomFn
+    catalyst
   });
 
   const cafeBudget = perPersonBudget - (selectedRestaurant?.cost || 0);
   const selectedCafe = pickCourseStop({
-    category: '카페',
+    category: cat2,
     targetSpace,
     budget: cafeBudget,
     currentNode: selectedRestaurant,
@@ -302,13 +292,12 @@ export const calculateDateCourse = ({
     dateType,
     weather,
     crowd,
-    catalyst,
-    randomFn
+    catalyst
   });
 
   const activityBudget = cafeBudget - (selectedCafe?.cost || 0);
   const selectedActivity = pickCourseStop({
-    category: '액티비티',
+    category: cat3,
     targetSpace,
     budget: activityBudget,
     currentNode: selectedCafe,
@@ -316,8 +305,7 @@ export const calculateDateCourse = ({
     dateType,
     weather,
     crowd,
-    catalyst,
-    randomFn
+    catalyst
   });
 
   const totalBudgetSpent = (
@@ -372,19 +360,19 @@ export const getCompatibilityTip = (boyfriendMbti, girlfriendMbti) => {
 
   const tips = [];
   if (boyfriend[0] !== girlfriend[0]) {
-    tips.push('한 명은 활기 있는 장소에서 에너지를 얻고, 다른 한 명은 조용한 구간에서 회복하는 조합입니다. 코스 중간에 차분한 카페를 넣는 편이 좋습니다.');
+    tips.push('한 명은 활기 있는 장소에서 에너지를 얻고, 다른 한 명은 조용한 구간에서 회복하는 조합입니다. 코스 중간에 차분한 심리형 스팟을 배치하는 것이 좋습니다.');
   } else if (boyfriend[0] === 'I') {
-    tips.push('두 분 모두 조용한 대화와 여유 있는 이동을 선호할 가능성이 높아, 웨이팅과 소음이 큰 구간을 줄였습니다.');
+    tips.push('두 분 모두 조용한 대화와 여유 있는 이동을 선호할 가능성이 높아, 혼잡 및 인파 피로가 극히 적은 프라이빗한 힐링/심리형 스팟 중심으로 설계되었습니다.');
   } else {
-    tips.push('두 분 모두 활동적인 분위기를 즐길 가능성이 높아, 식사 후 체험형 액티비티로 흐름을 이어가도록 잡았습니다.');
+    tips.push('두 분 모두 활동적인 분위기를 즐길 가능성이 높아, 체험형 액티비티로 활력 있는 흐름을 이어가도록 잡았습니다.');
   }
 
   if (boyfriend[3] !== girlfriend[3]) {
-    tips.push('계획형과 즉흥형이 섞여 있어 예약 부담이 큰 장소와 자유롭게 들를 수 있는 장소를 함께 배치했습니다.');
+    tips.push('계획형과 즉흥형이 섞여 있어 예약 부담이 적은 소장형(인생네컷 등)과 계획적인 체험 코스를 함께 배치했습니다.');
   } else if (boyfriend[3] === 'J') {
-    tips.push('두 분 모두 계획형에 가까워 층 이동과 대기 가능성을 더 보수적으로 반영했습니다.');
+    tips.push('두 분 모두 계획형에 가까워 층간 이동과 대기 동선의 효율을 극대화했습니다.');
   } else {
-    tips.push('두 분 모두 즉흥형에 가까워 부담 없이 바꿀 수 있는 워크인 장소의 점수를 높였습니다.');
+    tips.push('두 분 모두 즉흥형에 가까워 부담 없이 방문을 조율할 수 있는 스팟의 점수를 높였습니다.');
   }
 
   return tips.slice(0, 2).join(' ');
@@ -393,29 +381,29 @@ export const getCompatibilityTip = (boyfriendMbti, girlfriendMbti) => {
 export const getCatalystDetail = (catalystKey) => {
   const details = {
     dopamine: {
-      label: '활동적인 코스',
+      label: '💥 도파민 대폭발',
       color: '#c678ff',
-      desc: '스몹, 체험형 공간처럼 몸을 쓰거나 텐션을 올릴 수 있는 장소를 더 높게 봅니다.'
+      desc: '체험형 공간처럼 역동적으로 함께 몸을 쓰거나 텐션을 올릴 수 있는 장소를 가장 높게 평가합니다.'
     },
     oxytocin: {
-      label: '편안한 코스',
+      label: '🧸 옥시토신 온기',
       color: '#55d6be',
-      desc: '카페, 도서관, 스파처럼 오래 머물기 좋고 피로가 낮은 장소를 더 높게 봅니다.'
+      desc: '조용히 오래 머물기 좋고 편안한 온기를 주는 힐링 스파/도서관 장소를 가장 높게 평가합니다.'
     },
     spark: {
-      label: '사진 남기기',
+      label: '⚡ 로맨틱 스파크',
       color: '#ff758c',
-      desc: '비주얼이 좋고 기록하기 좋은 매장과 포토 스팟을 더 높게 봅니다.'
+      desc: '비주얼이 감각적이고 기록/소장 가치가 높은 핫플레이스를 가장 높게 평가합니다.'
     },
     telepathy: {
-      label: '조용한 대화',
+      label: '🔮 소울 텔레파시',
       color: '#3bd1ff',
-      desc: '소음이 덜하고 대화하기 좋은 카페, 음악, 산책형 장소를 더 높게 봅니다.'
+      desc: '대화하기 수월하고 조용한 교감이 이루어지는 아날로그적인 심리형 스팟을 가장 높게 평가합니다.'
     },
     lucky: {
-      label: '랜덤 추천',
+      label: '🎲 올라운더 럭키',
       color: '#ffd23f',
-      desc: '기본 점수에 작은 변화를 주어 평소와 다른 조합을 시도합니다.'
+      desc: '결정론적 고유 해시 로직에 따라 평소와 다른 조화로운 숨은 럭키 경로를 추천합니다.'
     }
   };
 
@@ -438,7 +426,7 @@ export const buildRouteAnalysis = ({
   crowd = DEFAULT_CROWD
 }) => {
   const stops = [selectedRestaurant, selectedCafe, selectedActivity].filter(Boolean);
-  const hasFullCourse = stops.length === COURSE_CATEGORIES.length;
+  const hasFullCourse = stops.length === COURSE_CATEGORIES.length - 1; // since stops.length should be 3
   const starfieldOnly = hasFullCourse && isStarfieldCourse(stops);
   const domainBadge = starfieldOnly ? '스타필드 수원 실내 코스' : '외부 이동 포함 코스';
   const badgeClass = starfieldOnly ? 'badge-starfield' : 'badge-external';
@@ -508,8 +496,8 @@ export const buildRouteAnalysis = ({
 
   if (starfieldOnly) {
     const floorSummary = floorDiff === 0
-      ? `${selectedRestaurant.floor}층에서 식사, 카페, 액티비티가 모두 이어집니다.`
-      : `식사 ${selectedRestaurant.floor}층, 카페 ${selectedCafe.floor}층, 액티비티 ${selectedActivity.floor}층 순서입니다.`;
+      ? `${selectedRestaurant.floor}층에서 모든 코스가 부드럽게 이어집니다.`
+      : `1단계 스팟 ${selectedRestaurant.floor}층, 2단계 스팟 ${selectedCafe.floor}층, 3단계 스팟 ${selectedActivity.floor}층 순서입니다.`;
 
     sections.push({
       title: '동선 설계',

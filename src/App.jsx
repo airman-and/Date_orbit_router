@@ -336,8 +336,8 @@ export default function App() {
             <StoreDirectoryPanel />
 
             <div className="action-buttons-row">
-              <button className="btn-stretch btn-secondary" type="button" onClick={() => triggerCalculation()}>
-                다른 코스 추천받기
+              <button className="btn-stretch btn-secondary" type="button" onClick={() => window.print()}>
+                🖨️ 오늘의 동선 연산서 인쇄 / PDF 저장
               </button>
               <button className="btn-stretch" type="button" onClick={handleReset}>
                 처음부터 다시 선택하기

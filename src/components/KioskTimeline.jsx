@@ -45,7 +45,13 @@ const ICONS = {
   )
 };
 
-const CATALYST_KEYS = ['dopamine', 'oxytocin', 'spark', 'telepathy', 'lucky'];
+const catalystsList = [
+  { key: 'dopamine', label: "💥 도파민", color: "#c678ff" },
+  { key: 'oxytocin', label: "🧸 옥시토신", color: "#55d6be" },
+  { key: 'spark', label: "⚡ 스파크", color: "#ff758c" },
+  { key: 'telepathy', label: "🔮 텔레파시", color: "#3bd1ff" },
+  { key: 'lucky', label: "🎲 럭키", color: "#ffd23f" }
+];
 
 const formatCurrency = (value) => `₩${Number(value || 0).toLocaleString()}`;
 
@@ -57,8 +63,9 @@ const getPlanet = (planetName) => PLANETS[planetName] || {
   iconKey: 'calm'
 };
 
-function TimelineNode({ order, label, place, planetName }) {
+function TimelineNode({ order, place, planetName }) {
   const planet = getPlanet(planetName);
+  const tagColor = planet.color;
 
   return (
     <article className="timeline-node">
@@ -66,19 +73,37 @@ function TimelineNode({ order, label, place, planetName }) {
       <div className="node-header">
         <span className="node-title">
           <span style={{ color: planet.color }}>{ICONS[planet.iconKey]}</span>
-          {label}
+          {planet.name}
         </span>
-        <span className="badge-sponsor-timeline">{planet.sponsor}</span>
+        <span className="badge-sponsor-timeline">Sponsor: {planet.sponsor}</span>
       </div>
       <p className="node-theme-copy">{planet.desc}</p>
       <div className="node-meta">
-        <strong>추천 매장: {place.name}</strong>
-        <p>{place.desc}</p>
-        <div className="node-meta-row">
+        <strong>📍 {order}단계 코스: {place.name}</strong>
+        <p style={{ marginTop: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{place.desc}</p>
+        <div className="node-meta-row" style={{ marginTop: '8px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '6px' }}>
           <span>2인 기준 {formatCurrency(place.cost * 2)}</span>
           <span>{place.floor}층</span>
           <span>#{place.tag}</span>
         </div>
+
+        {/* Couple Action Mission Card Component */}
+        {place.mission && (
+          <div 
+            style={{
+              marginTop: '12px',
+              background: `${tagColor}08`,
+              border: `1px dashed ${tagColor}40`,
+              padding: '10px 14px',
+              borderRadius: '8px',
+              fontSize: '0.75rem',
+              lineHeight: 1.4
+            }}
+          >
+            <span style={{ color: tagColor, fontWeight: 800, display: 'inline-block', marginBottom: '2px' }}>🧭 커플 액션 미션(Mission):</span>
+            <p style={{ margin: 0, color: 'var(--text-secondary)' }}>{place.mission}</p>
+          </div>
+        )}
       </div>
     </article>
   );
@@ -95,115 +120,108 @@ export default function KioskTimeline({
   badgeClass,
   matchRate,
   catalyst,
-  onCatalystChange,
-  onRecalculate,
-  randomFn = Math.random
+  onCatalystChange
 }) {
-  const [isRolling, setIsRolling] = useState(false);
-  const [justRolled, setJustRolled] = useState(false);
-  const [tempCatalyst, setTempCatalyst] = useState(null);
-  const [isCatalystRolling, setIsCatalystRolling] = useState(false);
-
   if (!selectedRestaurant || !selectedCafe || !selectedActivity) return null;
 
-  const activeCatalyst = tempCatalyst || catalyst;
-  const catalystInfo = getCatalystDetail(activeCatalyst);
+  const catalystInfo = getCatalystDetail(catalyst);
   const perPersonTotal = selectedRestaurant.cost + selectedCafe.cost + selectedActivity.cost;
 
-  const handleCourseRoll = () => {
-    if (isRolling || isCatalystRolling) return;
-    setIsRolling(true);
-    setJustRolled(false);
-    playSFX('roll');
-
-    window.setTimeout(() => {
-      onRecalculate();
-      setIsRolling(false);
-      setJustRolled(true);
+  const handleCatalystClick = (key) => {
+    if (catalyst === key) {
+      onCatalystChange(null); // Toggle off
+    } else {
+      onCatalystChange(key);
       playSFX('success');
-
-      window.setTimeout(() => setJustRolled(false), 800);
-    }, 650);
+    }
   };
-
-  const handleCatalystRoll = () => {
-    if (isCatalystRolling || isRolling) return;
-    setIsCatalystRolling(true);
-    setTempCatalyst(null);
-    playSFX('roll');
-
-    let count = 0;
-    const interval = window.setInterval(() => {
-      setTempCatalyst(CATALYST_KEYS[count % CATALYST_KEYS.length]);
-      count += 1;
-    }, 90);
-
-    window.setTimeout(() => {
-      window.clearInterval(interval);
-      const safeRandom = Math.max(0, Math.min(0.999999, Number(randomFn())));
-      const finalCatalyst = CATALYST_KEYS[Math.floor(safeRandom * CATALYST_KEYS.length)];
-      setTempCatalyst(null);
-      onCatalystChange(finalCatalyst);
-      setIsCatalystRolling(false);
-      setJustRolled(true);
-      playSFX('success');
-      window.setTimeout(() => setJustRolled(false), 800);
-    }, 650);
-  };
-
-  const isBusy = isRolling || isCatalystRolling;
 
   return (
-    <section className={`premium-card route-detail-card ${justRolled ? 'fate-flash' : ''}`} aria-labelledby="route-detail-title">
-      <div className="score-badge-container">
-        <div>
-          <span className="section-kicker">DETAIL</span>
-          <h3 id="route-detail-title" className="score-title">상세 동선</h3>
+    <section className="premium-card route-detail-card" aria-labelledby="route-detail-title">
+      
+      {/* 🧪 Destiny Catalyst Direct Selection Deck */}
+      <div className="destiny-catalyst-panel" style={{ marginBottom: '24px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', padding: '18px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--sf-pink)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+            Cosmic Chemistry Catalyst Selector
+          </span>
+          <h4 style={{ fontSize: '0.9rem', color: 'white', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', margin: '4px 0' }}>
+            🧪 <span style={{ color: catalystInfo.color, textShadow: `0 0 10px ${catalystInfo.color}30` }}>
+              {catalyst ? `${catalystInfo.label} 주입됨` : '감정 촉매제 선택 대기 중'}
+            </span>
+          </h4>
+          <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.4, margin: 0 }}>
+            {catalystInfo.desc}
+          </p>
         </div>
 
-        <div className="orbit-control-row">
-          <button
-            type="button"
-            onClick={handleCatalystRoll}
-            disabled={isBusy}
-            className={`compact-orbit-button ${isCatalystRolling ? 'pulse-btn' : ''}`}
-          >
-            {isCatalystRolling ? '분위기 선택 중...' : '분위기 랜덤 선택'}
-          </button>
+        {/* Catalyst Buttons Row */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+          {catalystsList.map(catItem => {
+            const isSelected = catalyst === catItem.key;
+            return (
+              <button
+                key={catItem.key}
+                onClick={() => handleCatalystClick(catItem.key)}
+                style={{
+                  background: isSelected ? `${catItem.color}15` : 'rgba(255,255,255,0.02)',
+                  border: `1.5px solid ${isSelected ? catItem.color : 'rgba(255,255,255,0.06)'}`,
+                  borderRadius: '10px',
+                  padding: '8px 14px',
+                  fontSize: '0.76rem',
+                  color: isSelected ? 'white' : 'var(--text-secondary)',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: isSelected ? `0 0 12px ${catItem.color}25` : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {catItem.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-          <button
-            type="button"
-            onClick={handleCourseRoll}
-            disabled={isBusy}
-            className="compact-orbit-button border-beam-btn"
+      <div className="score-badge-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+        <div>
+          <span className="section-kicker">DETAIL</span>
+          <h3 id="route-detail-title" className="score-title">단 하나의 최적 궤도 타임라인</h3>
+        </div>
+
+        <div className="orbit-control-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div 
+            style={{
+              background: 'rgba(255, 90, 121, 0.08)',
+              border: '1.5px solid var(--sf-pink)',
+              borderRadius: '20px',
+              padding: '6px 14px',
+              fontSize: '0.78rem',
+              color: 'white',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 10px rgba(255, 90, 121, 0.15)',
+              letterSpacing: '0.5px'
+            }}
           >
-            <svg
-              className={isRolling ? 'spinning' : ''}
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            {isRolling ? '추천 중...' : '코스 다시 추천'}
-          </button>
-
-          <span className="catalyst-chip" style={{ borderColor: catalystInfo.color, color: catalystInfo.color }}>
-            {catalystInfo.label}
-          </span>
+            🔒 알고리즘 확정됨
+          </div>
           <span className="score-val">{matchRate}% Match</span>
         </div>
       </div>
 
-      <div className="catalyst-description">{catalystInfo.desc}</div>
-
-      <div className="metrics-row">
+      <div className="metrics-row" style={{ marginTop: '20px' }}>
         <div className="metric-col">
-          <div className="metric-label">총 비용</div>
+          <div className="metric-label">총 비용 (2인)</div>
           <div className="metric-val">{formatCurrency(totalBudgetSpent)}</div>
         </div>
         <div className="metric-col">
@@ -216,10 +234,10 @@ export default function KioskTimeline({
         </div>
       </div>
 
-      <div className="custom-timeline" data-busy={isBusy ? 'true' : 'false'}>
-        <TimelineNode order={1} label="식사" place={selectedRestaurant} planetName={planetOrder[0]} />
-        <TimelineNode order={2} label="카페" place={selectedCafe} planetName={planetOrder[1]} />
-        <TimelineNode order={3} label="액티비티" place={selectedActivity} planetName={planetOrder[2]} />
+      <div className="custom-timeline" style={{ marginTop: '24px' }}>
+        <TimelineNode order={1} place={selectedRestaurant} planetName={planetOrder[0]} />
+        <TimelineNode order={2} place={selectedCafe} planetName={planetOrder[1]} />
+        <TimelineNode order={3} place={selectedActivity} planetName={planetOrder[2]} />
       </div>
     </section>
   );
