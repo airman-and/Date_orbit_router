@@ -348,6 +348,25 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {step === 2 && !hasResults && (
+          <div style={{ padding: '20px', border: '2px solid #ff0055', margin: '20px 0', color: '#ff0055', backgroundColor: 'rgba(255,0,85,0.08)', borderRadius: '8px', zIndex: 99999, position: 'relative' }}>
+            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>⚠️ 데이트 코스 연산 실패</h3>
+            <p style={{ margin: '4px 0', fontSize: '0.85rem' }}>결과 객체 상태:</p>
+            <ul style={{ fontSize: '0.8rem', paddingLeft: '20px', margin: '6px 0' }}>
+              <li>step: {step}</li>
+              <li>selectedRestaurant: {selectedRestaurant ? selectedRestaurant.name : 'null (Stop 1 연산 실패)'}</li>
+              <li>selectedCafe: {selectedCafe ? selectedCafe.name : 'null (Stop 2 연산 실패)'}</li>
+              <li>selectedActivity: {selectedActivity ? selectedActivity.name : 'null (Stop 3 연산 실패)'}</li>
+              <li>planetOrder: {JSON.stringify(planetOrder)}</li>
+              <li>resolvedPlanetOrder: {JSON.stringify(resolvedPlanetOrder)}</li>
+              <li>boyfriendMbti: {boyfriendMbti}</li>
+              <li>girlfriendMbti: {girlfriendMbti}</li>
+              <li>budgetInput: {budgetInput}</li>
+              <li>zonePreference: {zonePreference}</li>
+            </ul>
+          </div>
+        )}
       </main>
 
       <DoomEasterEgg isOpen={isDoomOpen} onClose={() => setIsDoomOpen(false)} />
