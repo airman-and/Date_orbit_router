@@ -1,6 +1,6 @@
 import { PLACE_DB } from '../data/places';
 
-export const COURSE_CATEGORIES = ['체험형', '소장형', '인증형', '심리형'];
+export const COURSE_CATEGORIES = ['대화의 밀도', '취향의 확장', '관계의 박제'];
 export const DEFAULT_WEATHER = 'sunny';
 export const DEFAULT_CROWD = 'normal';
 
@@ -47,43 +47,11 @@ export const answersToMbti = (answers) => {
   return `${char1}${char2}${char3}${char4}`;
 };
 
-export const getDeterministicOrbit = (couple) => {
-  // Planet A
-  let planetA = '심리형 궤도';
-  if (couple.E_I > 0.6) {
-    planetA = '체험형 궤도';
-  } else if (couple.S_N > 0.6) {
-    planetA = '소장형 궤도';
-  } else if (couple.T_F < 0.4) {
-    planetA = '인증형 궤도';
+export const getDeterministicOrbit = (couple, mealStatus = 'hungry') => {
+  if (mealStatus === 'full') {
+    return ['취향의 확장 궤도', '관계의 박제 궤도', '대화의 밀도 궤도'];
   }
-
-  // Planet B
-  let planetB = couple.S_N > 0.5 ? '소장형 궤도' : '심리형 궤도';
-  if (planetB === planetA) {
-    planetB = planetA === '심리형 궤도' ? '인증형 궤도' : '심리형 궤도';
-  }
-
-  // Planet C
-  let planetC = '인증형 궤도';
-  if (couple.E_I > 0.6) {
-    planetC = '체험형 궤도';
-  } else if (couple.J_P > 0.5) {
-    planetC = '소장형 궤도';
-  }
-
-  const used = new Set([planetA, planetB]);
-  if (used.has(planetC)) {
-    const fallbacks = ['체험형 궤도', '소장형 궤도', '인증형 궤도', '심리형 궤도'];
-    for (const fallback of fallbacks) {
-      if (!used.has(fallback)) {
-        planetC = fallback;
-        break;
-      }
-    }
-  }
-
-  return [planetA, planetB, planetC];
+  return ['대화의 밀도 궤도', '취향의 확장 궤도', '관계의 박제 궤도'];
 };
 
 export const getTargetSpace = (zonePreference) => (
@@ -124,20 +92,22 @@ export const scorePlace = (
 
   let presetScore = 0.0;
   if (dateType === '1. 설렘 반 어색 반 (초기 커플)') {
-    if (node.category === '체험형' || node.tag?.includes('체험') || node.tag?.includes('DIY')) {
-      presetScore += 15.0;
+    if (node.category === '대화의 밀도' || node.category === '취향의 확장') {
+      presetScore += 12.0;
     }
-    if (node.S_N < 0.4) presetScore += 8.0;
+    if (node.tag?.includes('체험') || node.tag?.includes('소품') || node.tag?.includes('DIY')) {
+      presetScore += 10.0;
+    }
   } else if (dateType === '2. 인스타 하이라이트 (트렌드 세터)') {
     presetScore += node.instagram_score * 3.0;
-    if (node.category === '인증형') presetScore += 10.0;
+    if (node.category === '관계의 박제') presetScore += 12.0;
   } else if (dateType === '3. 만사 귀찮음 (릴랙스 힐링)') {
     presetScore += node.comfort_score * 3.5;
     presetScore += (5.0 - node.energy) * 4.0;
-    if (node.category === '심리형') presetScore += 8.0;
+    if (node.category === '대화의 밀도') presetScore += 8.0;
   } else if (dateType === '4. 파이팅 넘치는 (이색 도전)') {
     presetScore += node.energy * 6.0;
-    if (node.category === '체험형') presetScore += 12.0;
+    if (node.category === '관계의 박제' && node.energy >= 3) presetScore += 15.0;
   }
 
   if (crowd === 'peak') {
@@ -183,17 +153,17 @@ export const scorePlace = (
 
   let catalystScore = 0.0;
   if (catalyst === 'dopamine') {
-    if (node.category === '체험형' || node.energy >= 4) catalystScore += 18.0;
+    if (node.category === '관계의 박제' || node.energy >= 4) catalystScore += 18.0;
   } else if (catalyst === 'oxytocin') {
-    if (node.comfort_score >= 8 || node.category === '심리형' || node.name.includes('스파') || node.name.includes('도서관')) {
+    if (node.comfort_score >= 8 || node.category === '대화의 밀도' || node.name.includes('스파') || node.name.includes('도서관')) {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'spark') {
-    if (node.instagram_score >= 8 || node.category === '소장형' || node.category === '인증형') {
+    if (node.instagram_score >= 8 || node.category === '관계의 박제' || node.category === '취향의 확장') {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'telepathy') {
-    if (node.E_I < 0.4 || node.category === '심리형' || node.tag?.includes('로컬') || node.tag?.includes('산책')) {
+    if (node.E_I < 0.4 || node.category === '대화의 밀도' || node.tag?.includes('로컬') || node.tag?.includes('산책')) {
       catalystScore += 18.0;
     }
   } else if (catalyst === 'lucky') {
@@ -258,11 +228,12 @@ export const calculateDateCourse = ({
   weather = DEFAULT_WEATHER,
   crowd = DEFAULT_CROWD,
   planetOrder,
-  catalyst = null
+  catalyst = null,
+  mealStatus = 'hungry'
 }) => {
   const couple = getCoupleMbti(boyfriendMbti, girlfriendMbti);
   const targetSpace = getTargetSpace(zonePreference);
-  const activePlanetOrder = planetOrder?.length === 3 ? planetOrder : getDeterministicOrbit(couple);
+  const activePlanetOrder = planetOrder?.length === 3 ? planetOrder : getDeterministicOrbit(couple, mealStatus);
   const perPersonBudget = Math.max(0, Number(budget) || 0);
 
   // Map planets to domains
@@ -426,7 +397,7 @@ export const buildRouteAnalysis = ({
   crowd = DEFAULT_CROWD
 }) => {
   const stops = [selectedRestaurant, selectedCafe, selectedActivity].filter(Boolean);
-  const hasFullCourse = stops.length === COURSE_CATEGORIES.length - 1; // since stops.length should be 3
+  const hasFullCourse = stops.length === 3;
   const starfieldOnly = hasFullCourse && isStarfieldCourse(stops);
   const domainBadge = starfieldOnly ? '스타필드 수원 실내 코스' : '외부 이동 포함 코스';
   const badgeClass = starfieldOnly ? 'badge-starfield' : 'badge-external';

@@ -31,10 +31,9 @@ export default function StoreMapGuide({
               <label>📂 카테고리 분류</label>
               <select value={catFilter} onChange={(e) => onCatFilterChange(e.target.value)}>
                 <option value="전체보기">전체보기</option>
-                <option value="체험형">체험형</option>
-                <option value="소장형">소장형</option>
-                <option value="인증형">인증형</option>
-                <option value="심리형">심리형</option>
+                <option value="대화의 밀도">대화의 밀도</option>
+                <option value="취향의 확장">취향의 확장</option>
+                <option value="관계의 박제">관계의 박제</option>
               </select>
             </div>
           </div>

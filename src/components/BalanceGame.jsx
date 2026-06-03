@@ -163,7 +163,9 @@ export default function BalanceGame({
   onDateTypeChange,
   zonePreference,
   onZonePreferenceChange,
-  onStart
+  onStart,
+  mealStatus,
+  onMealStatusChange
 }) {
   const currentQ = GAME_QUESTIONS[gameStep] || GAME_QUESTIONS[0];
 
@@ -338,6 +340,32 @@ export default function BalanceGame({
                     </select>
                   </div>
 
+                  <div className="sidebar-field">
+                    <label>🎬 데이트 직전 식사 여부</label>
+                    <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div className="kiosk-radio-options" style={{ display: 'flex', gap: '20px', flexDirection: 'row' }}>
+                        <label className="kiosk-radio-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <input 
+                            type="radio" 
+                            name="game-meal-status" 
+                            checked={mealStatus === 'hungry'} 
+                            onChange={() => { playSFX('click'); onMealStatusChange('hungry'); }}
+                          />
+                          <span>🍽️ 아직 식사 안 함</span>
+                        </label>
+                        <label className="kiosk-radio-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <input 
+                            type="radio" 
+                            name="game-meal-status" 
+                            checked={mealStatus === 'full'} 
+                            onChange={() => { playSFX('click'); onMealStatusChange('full'); }}
+                          />
+                          <span>☕ 이미 식사 완료</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div className="sidebar-field">
                       <label>🎬 시추에이션 데이트 프리셋</label>
@@ -427,6 +455,32 @@ export default function BalanceGame({
                 <option value={200000}>200,000원</option>
                 <option value={300000}>300,000원</option>
               </select>
+            </div>
+
+            <div className="sidebar-field">
+              <label>🎬 데이트 직전 식사 여부</label>
+              <div className="kiosk-radio-box" style={{ padding: '8px 12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="kiosk-radio-options" style={{ display: 'flex', gap: '20px', flexDirection: 'row' }}>
+                  <label className="kiosk-radio-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <input 
+                      type="radio" 
+                      name="manual-meal-status" 
+                      checked={mealStatus === 'hungry'} 
+                      onChange={() => { playSFX('click'); onMealStatusChange('hungry'); }}
+                    />
+                    <span>🍽️ 아직 식사 안 함</span>
+                  </label>
+                  <label className="kiosk-radio-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <input 
+                      type="radio" 
+                      name="manual-meal-status" 
+                      checked={mealStatus === 'full'} 
+                      onChange={() => { playSFX('click'); onMealStatusChange('full'); }}
+                    />
+                    <span>☕ 이미 식사 완료</span>
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>

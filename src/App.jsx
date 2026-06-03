@@ -43,6 +43,7 @@ export default function App() {
   const [weather, setWeather] = useState('sunny');
   const [crowd, setCrowd] = useState('normal');
   const [planetOrder, setPlanetOrder] = useState([]);
+  const [mealStatus, setMealStatus] = useState('hungry');
   const [catalyst, setCatalyst] = useState(null);
   const [isDoomOpen, setIsDoomOpen] = useState(false);
   const loadingTimerRef = useRef(null);
@@ -57,11 +58,11 @@ export default function App() {
   } = useDateOrbit();
 
   const resolvedPlanetOrder = useMemo(() => {
-    const validPlanets = ['체험형 궤도', '소장형 궤도', '인증형 궤도', '심리형 궤도'];
+    const validPlanets = ['대화의 밀도 궤도', '취향의 확장 궤도', '관계의 박제 궤도'];
     const isValid = planetOrder.length === 3 && planetOrder.every(p => validPlanets.includes(p));
     if (isValid) return planetOrder;
-    return getDeterministicOrbit(getCoupleMbti(boyfriendMbti, girlfriendMbti));
-  }, [boyfriendMbti, girlfriendMbti, planetOrder]);
+    return getDeterministicOrbit(getCoupleMbti(boyfriendMbti, girlfriendMbti), mealStatus);
+  }, [boyfriendMbti, girlfriendMbti, planetOrder, mealStatus]);
 
   const triggerCalculation = useCallback((orderOverride = null, catalystOverride = undefined) => {
     const activeCatalyst = catalystOverride !== undefined ? catalystOverride : catalyst;
@@ -76,7 +77,8 @@ export default function App() {
       weather,
       crowd,
       activeOrder,
-      activeCatalyst
+      activeCatalyst,
+      mealStatus
     );
   }, [
     boyfriendMbti,
@@ -88,7 +90,8 @@ export default function App() {
     crowd,
     resolvedPlanetOrder,
     catalyst,
-    calculateCourse
+    calculateCourse,
+    mealStatus
   ]);
 
   useEffect(() => {
@@ -134,7 +137,7 @@ export default function App() {
     setStep(1);
     setCatalyst(null);
 
-    const initialOrder = getDeterministicOrbit(getCoupleMbti(boyfriendMbti, girlfriendMbti));
+    const initialOrder = getDeterministicOrbit(getCoupleMbti(boyfriendMbti, girlfriendMbti), mealStatus);
     setPlanetOrder(initialOrder);
 
     if (loadingTimerRef.current) {
@@ -151,7 +154,8 @@ export default function App() {
         weather,
         crowd,
         initialOrder,
-        null
+        null,
+        mealStatus
       );
       setStep(2);
       playSFX('success');
@@ -282,6 +286,8 @@ export default function App() {
             zonePreference={zonePreference}
             onZonePreferenceChange={setZonePreference}
             onStart={handleStartCalculations}
+            mealStatus={mealStatus}
+            onMealStatusChange={setMealStatus}
           />
         )}
 
@@ -327,6 +333,7 @@ export default function App() {
               }}
               boyfriendMbti={boyfriendMbti}
               girlfriendMbti={girlfriendMbti}
+              mealStatus={mealStatus}
             />
 
             <RouteInsights
@@ -365,10 +372,9 @@ export default function App() {
               <li>budgetInput: {budgetInput}</li>
               <li>zonePreference: {zonePreference}</li>
               <li>DB 총 갯수: {PLACE_DB?.length}</li>
-              <li>체험형 갯수: {PLACE_DB?.filter(p => p.category === '체험형').length}</li>
-              <li>소장형 갯수: {PLACE_DB?.filter(p => p.category === '소장형').length}</li>
-              <li>인증형 갯수: {PLACE_DB?.filter(p => p.category === '인증형').length}</li>
-              <li>심리형 갯수: {PLACE_DB?.filter(p => p.category === '심리형').length}</li>
+              <li>대화의 밀도 갯수: {PLACE_DB?.filter(p => p.category === '대화의 밀도').length}</li>
+              <li>취향의 확장 갯수: {PLACE_DB?.filter(p => p.category === '취향의 확장').length}</li>
+              <li>관계의 박제 갯수: {PLACE_DB?.filter(p => p.category === '관계의 박제').length}</li>
             </ul>
           </div>
         )}

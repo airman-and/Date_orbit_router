@@ -34,7 +34,8 @@ export const useDateOrbit = () => {
     weather,
     crowd,
     planetOrder,
-    catalyst = null
+    catalyst = null,
+    mealStatus = 'hungry'
   ) => {
     const nextCourse = calculateDateCourse({
       boyfriendMbti,
@@ -45,7 +46,8 @@ export const useDateOrbit = () => {
       weather,
       crowd,
       planetOrder,
-      catalyst
+      catalyst,
+      mealStatus
     });
 
     setCourse(nextCourse);

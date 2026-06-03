@@ -122,7 +122,8 @@ export default function KioskTimeline({
   catalyst,
   onCatalystChange,
   boyfriendMbti,
-  girlfriendMbti
+  girlfriendMbti,
+  mealStatus = 'hungry'
 }) {
   if (!selectedRestaurant || !selectedCafe || !selectedActivity) return null;
 
@@ -221,6 +222,44 @@ export default function KioskTimeline({
         </div>
       </div>
 
+      {/* 📣 트렌드 선언형 타겟 카피 배너 */}
+      <div className="declarative-target-banner" style={{
+        margin: '20px 0',
+        padding: '16px 20px',
+        background: mealStatus === 'full' ? 'rgba(255, 146, 51, 0.08)' : 'rgba(85, 214, 190, 0.08)',
+        borderLeft: `4px solid ${mealStatus === 'full' ? '#FF9233' : '#55D6BE'}`,
+        borderRadius: '8px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <p style={{
+          margin: 0,
+          fontSize: '0.92rem',
+          lineHeight: 1.5,
+          color: '#ffffff',
+          fontWeight: 700,
+          letterSpacing: '0.3px'
+        }}>
+          {mealStatus === 'full' 
+            ? "📣 오늘 그냥 가기 아쉽지 않아? 요즘 커플들은 영화 보고 꼭 여기서 서로 취향 인증하더라. 우리도 가볼까?" 
+            : "📣 영화 끝났어? 팝콘으로 안 채워진 얘기는 여기서 마저 해야지. 요즘 다들 영화 보고 여기 가던데?"
+          }
+        </p>
+        <span style={{
+          position: 'absolute',
+          right: '12px',
+          bottom: '4px',
+          fontSize: '0.6rem',
+          fontWeight: 800,
+          opacity: 0.15,
+          color: 'white',
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
+          Early Couple Trend Guide
+        </span>
+      </div>
+
       <div className="metrics-row" style={{ marginTop: '20px' }}>
         <div className="metric-col">
           <div className="metric-label">총 비용 (2인)</div>
@@ -240,6 +279,97 @@ export default function KioskTimeline({
         <TimelineNode order={1} place={selectedRestaurant} planetName={planetOrder[0]} />
         <TimelineNode order={2} place={selectedCafe} planetName={planetOrder[1]} />
         <TimelineNode order={3} place={selectedActivity} planetName={planetOrder[2]} />
+      </div>
+
+      {/* 🏷️ 연속적 브랜드 노출 (맥락적 패키지 광고) */}
+      <div className="co-branded-package-ad" style={{
+        marginTop: '28px',
+        padding: '20px',
+        background: 'linear-gradient(135deg, rgba(255, 90, 121, 0.08) 0%, rgba(255, 146, 51, 0.08) 100%)',
+        border: '1.5px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '16px',
+        position: 'relative',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.25)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{
+            fontSize: '0.68rem',
+            fontWeight: 800,
+            background: 'linear-gradient(90deg, #FF5A79, #FF9233)',
+            color: 'white',
+            padding: '4px 10px',
+            borderRadius: '20px',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}>
+            🔥 요즘 대세 트렌드 코스 패키지
+          </span>
+          <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>Sponsored Ad</span>
+        </div>
+
+        <h4 style={{ fontSize: '1.05rem', color: '#ffffff', fontWeight: 800, margin: '0 0 10px 0', lineHeight: 1.4 }}>
+          {mealStatus === 'hungry' 
+            ? "🎬 영화 직후 여운 200% 정복 패키지" 
+            : "🛍️ 데이트 텐션 밀착 보장 연장선 패키지"
+          }
+        </h4>
+
+        {/* Dynamic Route Flow */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          background: 'rgba(0, 0, 0, 0.25)',
+          padding: '12px 14px',
+          borderRadius: '10px',
+          margin: '12px 0',
+          flexWrap: 'wrap'
+        }}>
+          <span style={{ color: '#55D6BE', fontWeight: 700, fontSize: '0.82rem' }}>
+            [{selectedRestaurant.name.split(' (')[0]}]
+          </span>
+          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>➔</span>
+          <span style={{ color: '#FF9233', fontWeight: 700, fontSize: '0.82rem' }}>
+            [{selectedCafe.name.split(' (')[0]}]
+          </span>
+          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>➔</span>
+          <span style={{ color: '#FF5A79', fontWeight: 700, fontSize: '0.82rem' }}>
+            [{selectedActivity.name.split(' (')[0]}]
+          </span>
+        </div>
+
+        <p style={{ margin: 0, fontSize: '0.76rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
+          {mealStatus === 'hungry'
+            ? `초기 커플의 대세 공식! [${selectedRestaurant.name.split(' (')[0]}]에서 여운을 나눈 뒤 [${selectedCafe.name.split(' (')[0]}] 소품 구경으로 친밀도를 넓히고, 마지막으로 [${selectedActivity.name.split(' (')[0]}]에서 인증샷을 박제해 서로를 기록해 보세요.`
+            : `이것이 요즘 커플 연장 공식! [${selectedRestaurant.name.split(' (')[0]}]에서 취향을 교감하고 [${selectedCafe.name.split(' (')[0]}]에서 관계의 마무리를 박제한 뒤, 아쉬운 마음은 [${selectedActivity.name.split(' (')[0]}]에서 달콤한 음료와 함께 털어내는 것이 요즘 트렌드 대세!`
+          }
+        </p>
+
+        {/* Coupon Mockup */}
+        <div style={{
+          marginTop: '14px',
+          borderTop: '1px dashed rgba(255,255,255,0.1)',
+          paddingTop: '12px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontSize: '0.74rem', color: '#ffb3c1', fontWeight: 700 }}>
+            🎁 패키지 전용 연계 할인 10% 쿠폰 탑재
+          </span>
+          <button style={{
+            background: 'white',
+            border: 'none',
+            color: '#1a1a1a',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            fontSize: '0.7rem',
+            fontWeight: 800,
+            cursor: 'pointer'
+          }} onClick={() => { playSFX('success'); alert('스타필드 수원 입점 브랜드 연계 10% 패키지 쿠폰이 발급되었습니다!'); }}>
+            받기
+          </button>
+        </div>
       </div>
     </section>
   );
