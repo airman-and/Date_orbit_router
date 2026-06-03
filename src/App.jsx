@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { PLANETS } from './data/places';
+import { PLACE_DB, PLANETS } from './data/places';
 import {
   answersToMbti,
   buildRouteAnalysis,
@@ -364,6 +364,11 @@ export default function App() {
               <li>girlfriendMbti: {girlfriendMbti}</li>
               <li>budgetInput: {budgetInput}</li>
               <li>zonePreference: {zonePreference}</li>
+              <li>DB 총 갯수: {PLACE_DB?.length}</li>
+              <li>체험형 갯수: {PLACE_DB?.filter(p => p.category === '체험형').length}</li>
+              <li>소장형 갯수: {PLACE_DB?.filter(p => p.category === '소장형').length}</li>
+              <li>인증형 갯수: {PLACE_DB?.filter(p => p.category === '인증형').length}</li>
+              <li>심리형 갯수: {PLACE_DB?.filter(p => p.category === '심리형').length}</li>
             </ul>
           </div>
         )}
