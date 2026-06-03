@@ -16,7 +16,7 @@ export default function SpaceHero({ step }) {
       <div className="sf-hero-content">
         <img
           className="sf-logo"
-          src="/brand/starfield-suwon/logo-starfield-suwon.png"
+          src={`${import.meta.env.BASE_URL}brand/starfield-suwon/logo-starfield-suwon.png`}
           alt="Starfield Suwon"
         />
         <span className="sf-eyebrow">DATE ROUTE GUIDE</span>
@@ -31,7 +31,7 @@ export default function SpaceHero({ step }) {
       </div>
 
       <div className="sf-hero-media">
-        <img src="/brand/starfield-suwon/byeolmadang-library.jpg" alt="스타필드 수원 별마당 도서관" />
+        <img src={`${import.meta.env.BASE_URL}brand/starfield-suwon/byeolmadang-library.jpg`} alt="스타필드 수원 별마당 도서관" />
         <div className="sf-media-caption">
           <strong>별마당 도서관</strong>
           <span>4-7F 문화 라운지</span>

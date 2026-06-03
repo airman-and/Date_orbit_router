@@ -14,7 +14,7 @@ export default function LoadingRoute() {
       <div className="loading-container">
         <video 
           ref={videoRef}
-          src="/loading_rocket.mp4" 
+          src={`${import.meta.env.BASE_URL}loading_rocket.mp4`} 
           autoPlay 
           muted 
           playsInline 

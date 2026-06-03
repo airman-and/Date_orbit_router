@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 
-const DOOM_BUNDLE_URL = '/vendor/doom.jsdos';
+const DOOM_BUNDLE_URL = `${import.meta.env.BASE_URL}vendor/doom.jsdos`;
 const DOS_ZONE_FALLBACK_URL = 'https://dos.zone/doom-dec-1993/';
 
 const createDoomSrcDoc = () => `<!doctype html>

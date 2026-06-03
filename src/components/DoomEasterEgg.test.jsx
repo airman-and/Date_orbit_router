@@ -12,7 +12,7 @@ describe('DoomEasterEgg', () => {
     expect(screen.queryByTitle('DOOM shareware running in js-dos')).not.toBeInTheDocument();
 
     rerender(<DoomEasterEgg isOpen onClose={onClose} />);
-    expect(screen.getByTitle('DOOM shareware running in js-dos')).toHaveAttribute('srcdoc', expect.stringContaining('/vendor/doom.jsdos'));
+    expect(screen.getByTitle('DOOM shareware running in js-dos')).toHaveAttribute('srcdoc', expect.stringContaining('vendor/doom.jsdos'));
 
     await user.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalledTimes(1);

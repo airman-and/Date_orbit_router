@@ -28,9 +28,9 @@ describe('date orbit domain', () => {
   it('selects a complete Starfield Suwon indoor course', () => {
     const course = calculateDateCourse({ ...DEFAULT_ARGS, randomFn: () => 0 });
 
-    expect(course.selectedRestaurant.category).toBe('식사');
-    expect(course.selectedCafe.category).toBe('카페');
-    expect(course.selectedActivity.category).toBe('액티비티');
+    expect(course.selectedRestaurant.category).toBe('대화의 밀도');
+    expect(course.selectedCafe.category).toBe('취향의 확장');
+    expect(course.selectedActivity.category).toBe('관계의 박제');
     expect(course.selectedRestaurant.space_type).toBe('Starfield_Suwon');
     expect(course.selectedCafe.space_type).toBe('Starfield_Suwon');
     expect(course.selectedActivity.space_type).toBe('Starfield_Suwon');
@@ -75,7 +75,7 @@ describe('date orbit domain', () => {
   it('uses injected random functions for reproducible top-candidate choice', () => {
     const couple = getCoupleMbti('INFJ', 'ENFP');
     const baseArgs = {
-      category: '카페',
+      category: '대화의 밀도',
       targetSpace: 'Starfield_Suwon',
       budget: 100000,
       currentNode: null,
